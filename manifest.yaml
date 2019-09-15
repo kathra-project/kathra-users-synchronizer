@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: Template
+metadata:
+  annotations:
+    description: "kathra-synchro"
+  labels:
+    product: "kathra-synchro"
+    app: "kathra-synchro"
+  name: "kathra-synchro"
+objects:
+- kind: Job
+  apiVersion: batch/v1
+  metadata:
+    name: kathra-synchro
+  spec:
+    activeDeadlineSeconds: 30
+    template:
+      metadata:
+        name: kathra-synchro
+      spec:
+        #serviceAccount: kathra-synchro
+        #serviceAccountName: kathra-synchro
+        containers:
+        - name: kathra-synchro
+          image: "${IMAGE_NAME}"
+          imagePullPolicy: Always
+          env:
+          - name: SOURCE_MANAGER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: synchronizer-config
+                key: SOURCE_MANAGER_URL
+          - name: PIPELINE_MANAGER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: synchronizer-config
+                key: PIPELINE_MANAGER_URL
+          - name: RESOURCE_MANAGER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: synchronizer-config
+                key: RESOURCE_MANAGER_URL
+          - name: USER_MANAGER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: synchronizer-config
+                key: USER_MANAGER_URL
+          - name: BINARY_REPOSITORY_MANAGER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: synchronizer-config
+                key: BINARY_REPOSITORY_MANAGER_URL
+          - name: USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: synchronizer-secret
+                key: USERNAME
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: synchronizer-secret
+                key: PASSWORD
+          - name: KEYCLOAK_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-secret
+                key: KEYCLOAK_CLIENT_ID
+          - name: KEYCLOAK_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-secret
+                key: KEYCLOAK_CLIENT_SECRET
+        restartPolicy: Never
+
