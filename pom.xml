@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kathra</groupId>
     <artifactId>kathra-users-synchronizer</artifactId>
-    <version>1.0.0-RC-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>KATHRA :: Users :: Synchronizer</name>
     <description>Kathra Users Synchronizer</description>
@@ -34,7 +34,8 @@
     <parent>
         <groupId>org.kathra</groupId>
         <artifactId>kathra-exec-parent</artifactId>
-        <version>1.0.0-RC-SNAPSHOT</version>
+        <version>1.0.0</version>
+        <relativePath>../kathra-exec-parent</relativePath>
     </parent>
 
     <repositories>
@@ -53,32 +54,32 @@
         <dependency>
             <groupId>org.kathra</groupId>
             <artifactId>kathra-sourcemanager-client</artifactId>
-            <version>1.0.0-RC-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kathra</groupId>
             <artifactId>kathra-pipelinemanager-client</artifactId>
-            <version>1.0.0-RC-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kathra</groupId>
             <artifactId>kathra-usermanager-client</artifactId>
-            <version>1.0.0-RC-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kathra</groupId>
             <artifactId>kathra-usermanager-client</artifactId>
-            <version>1.0.0-RC-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kathra</groupId>
             <artifactId>kathra-resourcemanager-client</artifactId>
-            <version>1.0.0-RC-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kathra</groupId>
             <artifactId>kathra-binaryrepositorymanager-client</artifactId>
-            <version>1.0.0-RC-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
