@@ -21,18 +21,14 @@
 
 package org.kathra;
 
+import org.kathra.core.model.*;
 import org.kathra.sourcemanager.client.SourceManagerClient;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.pipelinemanager.client.PipelinemanagerClient;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
 import org.kathra.binaryrepositorymanager.model.ContainersRepository;
-import org.kathra.core.model.Assignation;
-import org.kathra.core.model.Group;
-import org.kathra.core.model.Membership;
-import org.kathra.core.model.Resource;
-import org.kathra.core.model.SourceRepository;
 import org.kathra.pipelinemanager.model.Credential;
 import org.kathra.sourcemanager.model.Folder;
 import org.kathra.utils.ApiException;
@@ -62,15 +58,15 @@ public class UserSynchronizerManager {
     private Logger log = LoggerFactory.getLogger("UserSynchronizerManager");
 
     SourceManagerClient sourceManager;
-    PipelineManagerClient pipelineManager;
+    PipelinemanagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryrepositorymanagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;;
     private List<org.kathra.core.model.KeyPair> keyPairsExisting;
 
-    public UserSynchronizerManager(SourceManagerClient sourceManager, PipelineManagerClient pipelineManager,
-            UserManagerClient userManager, BinaryRepositoryManagerClient repositoryManager, GroupsClient groupsClient,
+    public UserSynchronizerManager(SourceManagerClient sourceManager, PipelinemanagerClient pipelineManager,
+            UserManagerClient userManager, BinaryrepositorymanagerClient repositoryManager, GroupsClient groupsClient,
             KeyPairsClient keyPairsClient) throws ApiException {
 
         this.sourceManager = sourceManager;
@@ -168,13 +164,13 @@ public class UserSynchronizerManager {
                     "Cannot create repository. Empty path: " + split[0] == null ? "NULL" : split[0].toString());
         }
         log.debug("Going to add repository " + split[0]);
-        ContainersRepository containersRepository = repositoryManager
-                .addContainersRepository(new ContainersRepository().name(split[0]));
+        BinaryRepository binaryRepository = repositoryManager
+                .addBinaryRepository(new BinaryRepository().name(split[0]));
         log.debug("Created container repo");
-        log.debug(containersRepository.toString());
-        log.debug(containersRepository.getName());
-        log.debug("" + containersRepository.getId());
-        repositoryManager.addContainersRepositoryMembership(containersRepository.getId().toString(),
+        log.debug(binaryRepository.toString());
+        log.debug(binaryRepository.getName());
+        log.debug("" + binaryRepository.getId());
+        repositoryManager.addBinaryRepositoryMembership(binaryRepository.getId().toString(),
                 new Membership().memberName("jenkins.harbor").memberType(Membership.MemberTypeEnum.USER)
                         .role(Membership.RoleEnum.CONTRIBUTOR).path(split[0]));
         return group;

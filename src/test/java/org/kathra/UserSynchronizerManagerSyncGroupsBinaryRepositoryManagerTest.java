@@ -25,28 +25,22 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
+import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
+import org.kathra.core.model.*;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.kathra.binaryrepositorymanager.model.ContainersRepository;
-import org.kathra.core.model.Assignation;
-import org.kathra.core.model.Group;
-import org.kathra.core.model.KeyPair;
-import org.kathra.core.model.Membership;
 import org.kathra.core.model.Group.BinaryRepositoryStatusEnum;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
-import org.kathra.core.model.Group.SourceMembershipStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.pipelinemanager.client.PipelinemanagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
-import org.kathra.core.model.Resource;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -66,9 +60,9 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
     Config config;
     KeycloackSession keycloackSession;
     SourceManagerClient sourceManager;
-    PipelineManagerClient pipelineManager;
+    PipelinemanagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryrepositorymanagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -84,9 +78,9 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         config = mock(Config.class);
         keycloackSession = mock(KeycloackSession.class);
         sourceManager = mock(SourceManagerClient.class);
-        pipelineManager = mock(PipelineManagerClient.class);
+        pipelineManager = mock(PipelinemanagerClient.class);
         userManager = mock(UserManagerClient.class);
-        repositoryManager = mock(BinaryRepositoryManagerClient.class);
+        repositoryManager = mock(BinaryrepositorymanagerClient.class);
         groupsClient = mock(GroupsClient.class);
         keyPairsClient = mock(KeyPairsClient.class);
 
@@ -209,18 +203,18 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         when(groupsClient.getGroups()).thenReturn(groupsFromResourceManager);
     }
 
-    private class ContainersRepositoryNameMatcher implements ArgumentMatcher<ContainersRepository> {
+    private class BinaryRepositoryNameMatcher implements ArgumentMatcher<BinaryRepository> {
 
         private String[] names;
 
-        public ContainersRepositoryNameMatcher(String... names) {
+        public BinaryRepositoryNameMatcher(String... names) {
             logger.info("Creating match class " + names);
             this.names = names;
             logger.info("total" + this.names.length);
         }
 
         @Override
-        public boolean matches(ContainersRepository argument) {
+        public boolean matches(BinaryRepository argument) {
             if (argument == null)
                 return false; // seems that this function is called when the mock is created
             logger.info(argument.toString());
@@ -235,17 +229,17 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         }
     }
 
-    private class ContainersRepositoryIdMatcher implements ArgumentMatcher<ContainersRepository> {
+    private class BinaryRepositoryIdMatcher implements ArgumentMatcher<BinaryRepository> {
 
-        private Integer[] ids;
+        private String[] ids;
 
-        public ContainersRepositoryIdMatcher(Integer... ids) {
+        public BinaryRepositoryIdMatcher(String... ids) {
             logger.info("Creating match class " + ids);
             this.ids = ids;
         }
 
         @Override
-        public boolean matches(ContainersRepository argument) {
+        public boolean matches(BinaryRepository argument) {
             for (int i = 0; i < this.ids.length; i++)
                 if (argument.getId() == this.ids[i])
                     return true;
@@ -281,8 +275,8 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         }
     }
 
-    private class AnswerContainerRepositoryWithId extends AnswerWithParameter<ContainersRepository> {
-        public ContainersRepository processReturnObject(ContainersRepository object) {
+    private class AnswerContainerRepositoryWithId extends AnswerWithParameter<BinaryRepository> {
+        public BinaryRepository processReturnObject(BinaryRepository object) {
             String name = object.getName();
             logger.info("AnswerContainerRepositoryWithId " + name);
             Pattern p = Pattern.compile("[0-9]+");// . represents single character
@@ -291,9 +285,8 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
             logger.info("Found number on " + matcher.group() + " starting at " + matcher.start() + " ending at "
                     + matcher.end());
             String number_str = name.substring(matcher.start(), matcher.end());
-            Integer number = Integer.valueOf(number_str);
-            logger.info("Object created with id " + Integer.toString(number));
-            object.setId(number);
+            logger.info("Object created with id " + number_str);
+            object.setId(number_str);
             return object;
         }
     }
@@ -326,18 +319,18 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         given_groups_have_key_pairs(0, 1, 2, 3);
         init_user_sync_manager();
         when(groupsClient.addGroup(any())).then(new AnswerPendingGroup());
-        when(repositoryManager.addContainersRepository(any())).then(new AnswerContainerRepositoryWithId());
+        when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
         userSynchronizerManager.synchronizeGroups();
 
-        verify(repositoryManager, times(0)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path0")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path1")));
-        verify(repositoryManager, times(0)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path2")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path3")));
+        verify(repositoryManager, times(0)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path0")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path1")));
+        verify(repositoryManager, times(0)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path2")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path3")));
 
         tearDown();
     }
@@ -351,18 +344,18 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         given_pending_groups_with_ready_pipeline_folder_status_from_resource_manager(0, 1, 2, 3);
         given_groups_have_key_pairs(0, 1, 2, 3);
         init_user_sync_manager();
-        when(repositoryManager.addContainersRepository(any())).then(new AnswerContainerRepositoryWithId());
+        when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
         userSynchronizerManager.synchronizeGroups();
 
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path0")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path1")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path2")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path3")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path0")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path1")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path2")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path3")));
 
         tearDown();
     }
@@ -376,18 +369,18 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         given_groups_have_key_pairs(0, 1, 2, 3);
         init_user_sync_manager();
         when(groupsClient.addGroup(any())).then(new AnswerPendingGroup());
-        when(repositoryManager.addContainersRepository(any())).then(new AnswerContainerRepositoryWithId());
+        when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
         userSynchronizerManager.synchronizeGroups();
 
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path0")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path1")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path2")));
-        verify(repositoryManager, times(1)).addContainersRepository(
-                argThat(containersRepository -> containersRepository.getName().equals("path3")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path0")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path1")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path2")));
+        verify(repositoryManager, times(1)).addBinaryRepository(
+                argThat(BinaryRepository -> BinaryRepository.getName().equals("path3")));
 
         tearDown();
     }
@@ -402,34 +395,34 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         given_groups_have_key_pairs(0, 1, 2, 3);
         init_user_sync_manager();
 
-        when(repositoryManager.addContainersRepository(any())).then(new AnswerContainerRepositoryWithId());
+        when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
         userSynchronizerManager.synchronizeGroups();
 
-        verify(repositoryManager, times(1)).addContainersRepositoryMembership(eq("0"),
-                argThat(containersRepositoryMembership -> containersRepositoryMembership.getMemberName()
+        verify(repositoryManager, times(1)).addBinaryRepositoryMembership(eq("0"),
+                argThat(BinaryRepositoryMembership -> BinaryRepositoryMembership.getMemberName()
                         .equals("jenkins.harbor")
-                        && containersRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
-                        && containersRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
-                        && containersRepositoryMembership.getPath().equals("path0")));
-        verify(repositoryManager, times(1)).addContainersRepositoryMembership(eq("1"),
-                argThat(containersRepositoryMembership -> containersRepositoryMembership.getMemberName()
+                        && BinaryRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
+                        && BinaryRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
+                        && BinaryRepositoryMembership.getPath().equals("path0")));
+        verify(repositoryManager, times(1)).addBinaryRepositoryMembership(eq("1"),
+                argThat(BinaryRepositoryMembership -> BinaryRepositoryMembership.getMemberName()
                         .equals("jenkins.harbor")
-                        && containersRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
-                        && containersRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
-                        && containersRepositoryMembership.getPath().equals("path1")));
-        verify(repositoryManager, times(1)).addContainersRepositoryMembership(eq("2"),
-                argThat(containersRepositoryMembership -> containersRepositoryMembership.getMemberName()
+                        && BinaryRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
+                        && BinaryRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
+                        && BinaryRepositoryMembership.getPath().equals("path1")));
+        verify(repositoryManager, times(1)).addBinaryRepositoryMembership(eq("2"),
+                argThat(BinaryRepositoryMembership -> BinaryRepositoryMembership.getMemberName()
                         .equals("jenkins.harbor")
-                        && containersRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
-                        && containersRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
-                        && containersRepositoryMembership.getPath().equals("path2")));
-        verify(repositoryManager, times(1)).addContainersRepositoryMembership(eq("3"),
-                argThat(containersRepositoryMembership -> containersRepositoryMembership.getMemberName()
+                        && BinaryRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
+                        && BinaryRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
+                        && BinaryRepositoryMembership.getPath().equals("path2")));
+        verify(repositoryManager, times(1)).addBinaryRepositoryMembership(eq("3"),
+                argThat(BinaryRepositoryMembership -> BinaryRepositoryMembership.getMemberName()
                         .equals("jenkins.harbor")
-                        && containersRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
-                        && containersRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
-                        && containersRepositoryMembership.getPath().equals("path3")));
+                        && BinaryRepositoryMembership.getMemberType().equals(Membership.MemberTypeEnum.USER)
+                        && BinaryRepositoryMembership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)
+                        && BinaryRepositoryMembership.getPath().equals("path3")));
 
         tearDown();
     }
@@ -442,7 +435,7 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         given_kathra_project_pending_binary_repo_status_from_resource_manager(0, 1, 2, 3);
         given_groups_have_key_pairs(0, 1, 2, 3);
         init_user_sync_manager();
-        when(repositoryManager.addContainersRepository(any())).then(new AnswerContainerRepositoryWithId());
+        when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
         userSynchronizerManager.synchronizeGroups();
 
@@ -468,11 +461,11 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         init_user_sync_manager();
 
         when(repositoryManager
-                .addContainersRepository(argThat(new ContainersRepositoryNameMatcher("path0", "path1"))))
+                .addBinaryRepository(argThat(new BinaryRepositoryNameMatcher("path0", "path1"))))
                         .thenThrow(new ApiException("Foobar"));
 
         when(repositoryManager
-                .addContainersRepository(argThat(new ContainersRepositoryNameMatcher("path2", "path3"))))
+                .addBinaryRepository(argThat(new BinaryRepositoryNameMatcher("path2", "path3"))))
                         .then(new AnswerContainerRepositoryWithId());
 
         userSynchronizerManager.synchronizeGroups();
@@ -497,9 +490,9 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         given_kathra_project_pending_binary_repo_status_from_resource_manager(0, 1, 2, 3);
         given_groups_have_key_pairs(0, 1, 2, 3);
         init_user_sync_manager();
-        when(repositoryManager.addContainersRepository(any())).then(new AnswerContainerRepositoryWithId());
+        when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
-        when(repositoryManager.addContainersRepositoryMembership(AdditionalMatchers.or(eq("2"), eq("3")), any()))
+        when(repositoryManager.addBinaryRepositoryMembership(AdditionalMatchers.or(eq("2"), eq("3")), any()))
                 .thenThrow(new ApiException("Foobar"));
 
         userSynchronizerManager.synchronizeGroups();

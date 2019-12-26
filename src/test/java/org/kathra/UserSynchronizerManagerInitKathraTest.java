@@ -26,14 +26,14 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
+import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.KeyPair;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.pipelinemanager.client.PipelinemanagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -53,9 +53,9 @@ public class UserSynchronizerManagerInitKathraTest {
     Config config;
     KeycloackSession keycloackSession;
     SourceManagerClient sourceManager;
-    PipelineManagerClient pipelineManager;
+    PipelinemanagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryrepositorymanagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -65,7 +65,7 @@ public class UserSynchronizerManagerInitKathraTest {
 
         List<KeyPair> mockedKeyPairs = new ArrayList<KeyPair>(1);
         keyPairsClient = mock(KeyPairsClient.class);
-        pipelineManager = mock(PipelineManagerClient.class);
+        pipelineManager = mock(PipelinemanagerClient.class);
         sourceManager = mock(SourceManagerClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
@@ -82,7 +82,7 @@ public class UserSynchronizerManagerInitKathraTest {
 
         List<KeyPair> mockedKeyPairs = new ArrayList<KeyPair>(1);
         keyPairsClient = mock(KeyPairsClient.class);
-        pipelineManager = mock(PipelineManagerClient.class);
+        pipelineManager = mock(PipelinemanagerClient.class);
         sourceManager = mock(SourceManagerClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
@@ -99,7 +99,7 @@ public class UserSynchronizerManagerInitKathraTest {
 
         List<KeyPair> mockedKeyPairs = new ArrayList<KeyPair>(1);
         keyPairsClient = mock(KeyPairsClient.class);
-        pipelineManager = mock(PipelineManagerClient.class);
+        pipelineManager = mock(PipelinemanagerClient.class);
         sourceManager = mock(SourceManagerClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 

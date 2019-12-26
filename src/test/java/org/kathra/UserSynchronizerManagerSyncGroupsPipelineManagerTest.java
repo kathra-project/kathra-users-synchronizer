@@ -21,47 +21,29 @@
 
 package org.kathra;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.mockito.Mockito.*;
-
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Null;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
-
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.kathra.core.model.Assignation;
-import org.kathra.core.model.Group;
-import org.kathra.core.model.KeyPair;
-import org.kathra.core.model.Membership;
+import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
+import org.kathra.core.model.*;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.pipelinemanager.client.PipelinemanagerClient;
 import org.kathra.pipelinemanager.model.Credential;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
-import org.kathra.core.model.Resource;
+import org.mockito.ArgumentMatcher;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Jorge Sainz Raso <jorge.sainzraso@kathra.org>
@@ -72,9 +54,9 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest {
     Config config;
     KeycloackSession keycloackSession;
     SourceManagerClient sourceManager;
-    PipelineManagerClient pipelineManager;
+    PipelinemanagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryrepositorymanagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -90,9 +72,9 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest {
         config = mock(Config.class);
         keycloackSession = mock(KeycloackSession.class);
         sourceManager = mock(SourceManagerClient.class);
-        pipelineManager = mock(PipelineManagerClient.class);
+        pipelineManager = mock(PipelinemanagerClient.class);
         userManager = mock(UserManagerClient.class);
-        repositoryManager = mock(BinaryRepositoryManagerClient.class);
+        repositoryManager = mock(BinaryrepositorymanagerClient.class);
         groupsClient = mock(GroupsClient.class);
         keyPairsClient = mock(KeyPairsClient.class);
     }

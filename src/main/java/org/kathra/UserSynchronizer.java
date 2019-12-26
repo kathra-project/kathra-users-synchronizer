@@ -25,11 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.kathra.core.model.User;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.pipelinemanager.client.PipelinemanagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.KeycloackSession;
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.Session;
@@ -48,11 +48,11 @@ public class UserSynchronizer {
         log.debug("Session received " + session.getAccessToken().toString());
         SourceManagerClient sourceManage = new SourceManagerClient(config.getSourceManagerUrl(), session);
         log.debug("Source manager client initiated");
-        PipelineManagerClient pipelineManager = new PipelineManagerClient(config.getPipelineManagerUrl(), session);
+        PipelinemanagerClient pipelineManager = new PipelinemanagerClient(config.getPipelineManagerUrl(), session);
         log.debug("Pipeline manager lient initiated");
         UserManagerClient userManager = new UserManagerClient(config.getUserManagerUrl(), session);
         log.debug("User manager client initiated");
-        BinaryRepositoryManagerClient repositoryManager = new BinaryRepositoryManagerClient(
+        BinaryrepositorymanagerClient repositoryManager = new BinaryrepositorymanagerClient(
                 config.getBinaryRepositoryManagerUrl(), session);
         log.debug("Respository Manager client initiated");
         GroupsClient groupsClient = new GroupsClient(config.getResourceManagerUrl(), session);

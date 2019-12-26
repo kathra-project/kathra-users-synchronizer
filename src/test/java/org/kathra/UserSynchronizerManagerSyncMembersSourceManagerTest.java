@@ -21,59 +21,30 @@
 
 package org.kathra;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.mockito.Mockito.*;
-
-import org.mockito.AdditionalMatchers;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Null;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
-
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.Assignation;
 import org.kathra.core.model.Group;
-import org.kathra.core.model.KeyPair;
-import org.kathra.core.model.Membership;
 import org.kathra.core.model.Group.BinaryRepositoryStatusEnum;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Group.SourceRepositoryStatusEnum;
+import org.kathra.core.model.Membership;
+import org.kathra.core.model.Resource;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
-import org.kathra.pipelinemanager.model.Credential;
-import org.kathra.resourcemanager.client.GroupsClient;
-import org.kathra.resourcemanager.client.KeyPairsClient;
-import org.kathra.sourcemanager.client.SourceManagerClient;
-import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
 import org.kathra.utils.serialization.GsonUtils;
-import org.kathra.core.model.Resource;
+import org.mockito.ArgumentMatcher;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.kathra.UserSynchronizerTests;
-import org.kathra.MockitoWhenChainingMethod;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Jorge Sainz Raso <jorge.sainzraso@kathra.org>

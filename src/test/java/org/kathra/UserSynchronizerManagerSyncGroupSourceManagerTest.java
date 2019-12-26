@@ -41,7 +41,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
 import org.kathra.core.model.Group;
 import org.kathra.core.model.KeyPair;
 import org.kathra.core.model.Membership;
@@ -49,12 +49,6 @@ import org.kathra.core.model.Group.BinaryRepositoryStatusEnum;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Group.SourceRepositoryStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
-import org.kathra.pipelinemanager.model.Credential;
-import org.kathra.resourcemanager.client.GroupsClient;
-import org.kathra.resourcemanager.client.KeyPairsClient;
-import org.kathra.sourcemanager.client.SourceManagerClient;
-import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
 import org.kathra.core.model.Resource;
 
