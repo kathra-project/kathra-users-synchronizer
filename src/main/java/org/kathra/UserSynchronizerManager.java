@@ -28,7 +28,6 @@ import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.kathra.binaryrepositorymanager.model.BinaryRepository;
 import org.kathra.pipelinemanager.model.Credential;
 import org.kathra.sourcemanager.model.Folder;
 import org.kathra.utils.ApiException;

@@ -21,13 +21,6 @@
 package org.kathra;
 
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.kathra.sourcemanager.client.SourceManagerClient;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.kathra.core.model.Assignation;
 import org.kathra.core.model.Group;
 import org.kathra.core.model.KeyPair;
 import org.kathra.core.model.Resource.StatusEnum;
@@ -35,12 +28,15 @@ import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.pipelinemanager.model.Credential;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
+import org.kathra.sourcemanager.client.SourceManagerClient;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
-
 import org.mockito.ArgumentMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

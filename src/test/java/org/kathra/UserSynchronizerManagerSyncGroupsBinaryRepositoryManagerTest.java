@@ -492,8 +492,7 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         init_user_sync_manager();
         when(repositoryManager.addBinaryRepository(any())).then(new AnswerContainerRepositoryWithId());
 
-        when(repositoryManager.addBinaryRepositoryMembership(AdditionalMatchers.or(eq("2"), eq("3")), any()))
-                .thenThrow(new ApiException("Foobar"));
+        doThrow(new ApiException("Foobar")).when(repositoryManager).addBinaryRepositoryMembership(AdditionalMatchers.or(eq("2"), eq("3")), any());
 
         userSynchronizerManager.synchronizeGroups();
 

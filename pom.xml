@@ -128,8 +128,14 @@
           <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-    
+
     <developers>
+        <developer>
+            <name>Jorge Sainz Raso</name>
+            <email>jorge.sainzraso@irt-systemx.fr</email>
+            <organization>IRT SystemX</organization>
+            <organizationUrl>https://www.irt-systemx.fr</organizationUrl>
+        </developer>
         <developer>
           <name>Jeremy Guillemot</name>
           <email>jeremy.guillemot@irt-systemx.fr</email>

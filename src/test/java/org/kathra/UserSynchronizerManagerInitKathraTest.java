@@ -21,28 +21,23 @@
 
 package org.kathra;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
-
-import static org.mockito.Mockito.*;
-
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import org.kathra.core.model.KeyPair;
 import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
+import org.kathra.sourcemanager.model.Folder;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
-import org.kathra.sourcemanager.model.Folder;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author Jorge Sainz Raso <jorge.sainzraso@kathra.org>
