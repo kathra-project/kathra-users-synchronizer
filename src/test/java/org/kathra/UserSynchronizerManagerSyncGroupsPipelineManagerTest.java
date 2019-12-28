@@ -22,11 +22,11 @@
 package org.kathra;
 
 import org.junit.Test;
-import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.*;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelinemanagerClient;
+import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.pipelinemanager.model.Credential;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
@@ -54,9 +54,9 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest {
     Config config;
     KeycloackSession keycloackSession;
     SourceManagerClient sourceManager;
-    PipelinemanagerClient pipelineManager;
+    PipelineManagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryrepositorymanagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -72,9 +72,9 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest {
         config = mock(Config.class);
         keycloackSession = mock(KeycloackSession.class);
         sourceManager = mock(SourceManagerClient.class);
-        pipelineManager = mock(PipelinemanagerClient.class);
+        pipelineManager = mock(PipelineManagerClient.class);
         userManager = mock(UserManagerClient.class);
-        repositoryManager = mock(BinaryrepositorymanagerClient.class);
+        repositoryManager = mock(BinaryRepositoryManagerClient.class);
         groupsClient = mock(GroupsClient.class);
         keyPairsClient = mock(KeyPairsClient.class);
     }

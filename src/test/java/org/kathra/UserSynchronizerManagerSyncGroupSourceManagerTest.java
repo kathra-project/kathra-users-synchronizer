@@ -41,7 +41,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.Group;
 import org.kathra.core.model.KeyPair;
 import org.kathra.core.model.Membership;

@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.*;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatcher;
@@ -35,7 +35,7 @@ import org.mockito.stubbing.Answer;
 import org.kathra.core.model.Group.BinaryRepositoryStatusEnum;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelinemanagerClient;
+import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -60,9 +60,9 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
     Config config;
     KeycloackSession keycloackSession;
     SourceManagerClient sourceManager;
-    PipelinemanagerClient pipelineManager;
+    PipelineManagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryrepositorymanagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -78,9 +78,9 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         config = mock(Config.class);
         keycloackSession = mock(KeycloackSession.class);
         sourceManager = mock(SourceManagerClient.class);
-        pipelineManager = mock(PipelinemanagerClient.class);
+        pipelineManager = mock(PipelineManagerClient.class);
         userManager = mock(UserManagerClient.class);
-        repositoryManager = mock(BinaryrepositorymanagerClient.class);
+        repositoryManager = mock(BinaryRepositoryManagerClient.class);
         groupsClient = mock(GroupsClient.class);
         keyPairsClient = mock(KeyPairsClient.class);
 

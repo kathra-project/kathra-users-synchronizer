@@ -26,14 +26,14 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
+import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import org.kathra.core.model.KeyPair;
-import org.kathra.pipelinemanager.client.PipelinemanagerClient;
+import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -56,11 +56,11 @@ public class UserSynchronizerManagerInitTest {
     @Mock
     SourceManagerClient sourceManager;
     @Mock
-    PipelinemanagerClient pipelineManager;
+    PipelineManagerClient pipelineManager;
     @Mock
     UserManagerClient userManager;
     @Mock
-    BinaryrepositorymanagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManager;
     @Mock
     GroupsClient groupsClient;
     @Mock

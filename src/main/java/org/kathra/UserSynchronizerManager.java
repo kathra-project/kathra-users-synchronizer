@@ -23,12 +23,12 @@ package org.kathra;
 
 import org.kathra.core.model.*;
 import org.kathra.sourcemanager.client.SourceManagerClient;
-import org.kathra.pipelinemanager.client.PipelinemanagerClient;
+import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
-import org.kathra.binaryrepositorymanager.client.BinaryrepositorymanagerClient;
-import org.kathra.binaryrepositorymanager.model.ContainersRepository;
+import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
+import org.kathra.binaryrepositorymanager.model.BinaryRepository;
 import org.kathra.pipelinemanager.model.Credential;
 import org.kathra.sourcemanager.model.Folder;
 import org.kathra.utils.ApiException;
@@ -58,15 +58,15 @@ public class UserSynchronizerManager {
     private Logger log = LoggerFactory.getLogger("UserSynchronizerManager");
 
     SourceManagerClient sourceManager;
-    PipelinemanagerClient pipelineManager;
+    PipelineManagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryrepositorymanagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManager;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;;
     private List<org.kathra.core.model.KeyPair> keyPairsExisting;
 
-    public UserSynchronizerManager(SourceManagerClient sourceManager, PipelinemanagerClient pipelineManager,
-            UserManagerClient userManager, BinaryrepositorymanagerClient repositoryManager, GroupsClient groupsClient,
+    public UserSynchronizerManager(SourceManagerClient sourceManager, PipelineManagerClient pipelineManager,
+            UserManagerClient userManager, BinaryRepositoryManagerClient repositoryManager, GroupsClient groupsClient,
             KeyPairsClient keyPairsClient) throws ApiException {
 
         this.sourceManager = sourceManager;
