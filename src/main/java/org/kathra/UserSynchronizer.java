@@ -24,6 +24,7 @@ package org.kathra;
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.User;
 import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -49,15 +50,20 @@ public class UserSynchronizer {
         log.debug("Pipeline manager lient initiated");
         UserManagerClient userManager = new UserManagerClient(config.getUserManagerUrl(), session);
         log.debug("User manager client initiated");
-        BinaryRepositoryManagerClient repositoryManager = new BinaryRepositoryManagerClient(
-                config.getBinaryRepositoryManagerUrl(), session);
+        BinaryRepositoryManagerClient repositoryManagerHarbor = new BinaryRepositoryManagerClient(
+                config.getBinaryRepositoryManagerUrlNexus(), session);
+        log.debug("Respository Manager client initiated");
+        BinaryRepositoryManagerClient repositoryManagerNexus = new BinaryRepositoryManagerClient(
+                config.getBinaryRepositoryManagerUrlHarbor(), session);
         log.debug("Respository Manager client initiated");
         GroupsClient groupsClient = new GroupsClient(config.getResourceManagerUrl(), session);
         log.debug("Groups client initiated");
         KeyPairsClient keyPairsClient = new KeyPairsClient(config.getResourceManagerUrl(), session);
         log.debug("Keys pair client initiated");
+        BinaryRepositoriesClient binaryRepositoriesClient = new BinaryRepositoriesClient(config.getResourceManagerUrl(), session);
+        log.debug("Keys pair client initiated");
         UserSynchronizerManager userSynchronizer = new UserSynchronizerManager(sourceManage, pipelineManager,
-                userManager, repositoryManager, groupsClient, keyPairsClient);
+                userManager, repositoryManagerNexus, repositoryManagerNexus, groupsClient, keyPairsClient, binaryRepositoriesClient);
         log.debug("User synchronizer manager initiated");
         // userSynchronizer.initKathra();
         userSynchronizer.synchronizeGroups();

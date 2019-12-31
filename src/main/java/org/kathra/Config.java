@@ -29,7 +29,8 @@ public class Config extends ConfigManager {
     private String PIPELINE_MANAGER_URL;
     private String USER_MANAGER_URL;
     private String RESOURCE_MANAGER_URL;
-    private String BINARY_REPOSITORY_MANAGER_URL;
+    private String BINARY_REPOSITORY_MANAGER_URL_NEXUS;
+    private String BINARY_REPOSITORY_MANAGER_URL_HARBOR;
     private String USERNAME;
     private String PASSWORD;
 
@@ -51,9 +52,13 @@ public class Config extends ConfigManager {
         if (!RESOURCE_MANAGER_URL.startsWith("http"))
             RESOURCE_MANAGER_URL = "http://" + RESOURCE_MANAGER_URL;
 
-        BINARY_REPOSITORY_MANAGER_URL = getProperty("BINARY_REPOSITORY_MANAGER_URL", "binaryrepositorymanager");
-        if (!BINARY_REPOSITORY_MANAGER_URL.startsWith("http"))
-            BINARY_REPOSITORY_MANAGER_URL = "http://" + BINARY_REPOSITORY_MANAGER_URL;
+        BINARY_REPOSITORY_MANAGER_URL_NEXUS = getProperty("BINARY_REPOSITORY_MANAGER_URL_NEXUS", "binaryrepositorymanager-nexus");
+        if (!BINARY_REPOSITORY_MANAGER_URL_NEXUS.startsWith("http"))
+            BINARY_REPOSITORY_MANAGER_URL_NEXUS = "http://" + BINARY_REPOSITORY_MANAGER_URL_NEXUS;
+
+        BINARY_REPOSITORY_MANAGER_URL_HARBOR = getProperty("BINARY_REPOSITORY_MANAGER_URL_HARBOR", "binaryrepositorymanager-harbor");
+        if (!BINARY_REPOSITORY_MANAGER_URL_HARBOR.startsWith("http"))
+            BINARY_REPOSITORY_MANAGER_URL_HARBOR = "http://" + BINARY_REPOSITORY_MANAGER_URL_HARBOR;
 
         USERNAME = getProperty("USERNAME");
         PASSWORD = getProperty("PASSWORD");
@@ -75,8 +80,11 @@ public class Config extends ConfigManager {
         return RESOURCE_MANAGER_URL;
     }
 
-    public String getBinaryRepositoryManagerUrl() {
-        return BINARY_REPOSITORY_MANAGER_URL;
+    public String getBinaryRepositoryManagerUrlHarbor() {
+        return BINARY_REPOSITORY_MANAGER_URL_HARBOR;
+    }
+    public String getBinaryRepositoryManagerUrlNexus() {
+        return BINARY_REPOSITORY_MANAGER_URL_NEXUS;
     }
 
     public String getUsername() {
