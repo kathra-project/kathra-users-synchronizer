@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.KeyPair;
 import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -53,7 +54,11 @@ public class UserSynchronizerManagerInitTest {
     @Mock
     UserManagerClient userManager;
     @Mock
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManagerNexus;
+    @Mock
+    BinaryRepositoryManagerClient repositoryManagerHarbor;
+    @Mock
+    BinaryRepositoriesClient binaryRepositoriesClient;
     @Mock
     GroupsClient groupsClient;
     @Mock
@@ -65,8 +70,8 @@ public class UserSynchronizerManagerInitTest {
         keyPairsClient = mock(KeyPairsClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
-        new UserSynchronizerManager(sourceManager, pipelineManager, userManager, repositoryManager, groupsClient,
-                keyPairsClient);
+        new UserSynchronizerManager(sourceManager, pipelineManager, userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient,
+                keyPairsClient, binaryRepositoriesClient);
 
         verify(keyPairsClient, times(1)).getKeyPairs();
 

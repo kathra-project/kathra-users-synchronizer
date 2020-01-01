@@ -28,6 +28,7 @@ import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
 import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.pipelinemanager.model.Credential;
+import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -56,7 +57,9 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest {
     SourceManagerClient sourceManager;
     PipelineManagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManagerNexus;
+    BinaryRepositoryManagerClient repositoryManagerHarbor;
+    BinaryRepositoriesClient binaryRepositoriesClient;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -74,14 +77,16 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest {
         sourceManager = mock(SourceManagerClient.class);
         pipelineManager = mock(PipelineManagerClient.class);
         userManager = mock(UserManagerClient.class);
-        repositoryManager = mock(BinaryRepositoryManagerClient.class);
+        repositoryManagerNexus = mock(BinaryRepositoryManagerClient.class);
+        repositoryManagerHarbor = mock(BinaryRepositoryManagerClient.class);
+        binaryRepositoriesClient = mock(BinaryRepositoriesClient.class);
         groupsClient = mock(GroupsClient.class);
         keyPairsClient = mock(KeyPairsClient.class);
     }
 
     private void init_user_sync_manager() throws ApiException {
         userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager, userManager,
-                repositoryManager, groupsClient, keyPairsClient);
+                repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
     }
 
     private void tearDown() throws ApiException {

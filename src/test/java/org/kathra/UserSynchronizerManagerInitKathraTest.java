@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.KeyPair;
 import org.kathra.pipelinemanager.client.PipelineManagerClient;
+import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
@@ -50,7 +51,9 @@ public class UserSynchronizerManagerInitKathraTest {
     SourceManagerClient sourceManager;
     PipelineManagerClient pipelineManager;
     UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManager;
+    BinaryRepositoryManagerClient repositoryManagerNexus;
+    BinaryRepositoryManagerClient repositoryManagerHarbor;
+    BinaryRepositoriesClient binaryRepositoriesClient;
     GroupsClient groupsClient;
     KeyPairsClient keyPairsClient;
 
@@ -65,7 +68,7 @@ public class UserSynchronizerManagerInitKathraTest {
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
         UserSynchronizerManager userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager,
-                userManager, repositoryManager, groupsClient, keyPairsClient);
+                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
 
         userSynchronizerManager.initKathra();
         verify(pipelineManager, times(1)).createFolder(argThat((String path) -> path == "kathra-projects"));
@@ -82,7 +85,7 @@ public class UserSynchronizerManagerInitKathraTest {
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
         UserSynchronizerManager userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager,
-                userManager, repositoryManager, groupsClient, keyPairsClient);
+                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
 
         userSynchronizerManager.initKathra();
         verify(sourceManager, times(1)).createFolder(argThat((Folder folder) -> folder.getPath() == "kathra-projects"));
@@ -99,7 +102,7 @@ public class UserSynchronizerManagerInitKathraTest {
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
         UserSynchronizerManager userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager,
-                userManager, repositoryManager, groupsClient, keyPairsClient);
+                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
 
         when(sourceManager.createFolder(any(Folder.class))).thenThrow(ApiException.class);
         try {

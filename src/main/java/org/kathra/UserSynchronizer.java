@@ -63,7 +63,7 @@ public class UserSynchronizer {
         BinaryRepositoriesClient binaryRepositoriesClient = new BinaryRepositoriesClient(config.getResourceManagerUrl(), session);
         log.debug("Keys pair client initiated");
         UserSynchronizerManager userSynchronizer = new UserSynchronizerManager(sourceManage, pipelineManager,
-                userManager, repositoryManagerNexus, repositoryManagerNexus, groupsClient, keyPairsClient, binaryRepositoriesClient);
+                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
         log.debug("User synchronizer manager initiated");
         // userSynchronizer.initKathra();
         userSynchronizer.synchronizeGroups();
