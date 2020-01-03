@@ -126,7 +126,6 @@ public class UserSynchronizerManager {
     }
 
     private boolean groupSourceManagerShouldBeSync(Group group_to_sync) {
-
         if (group_to_sync.getSourceRepositoryStatus() != null
                 && group_to_sync.getSourceRepositoryStatus().equals(Group.SourceRepositoryStatusEnum.READY))
             return false;
@@ -230,7 +229,7 @@ public class UserSynchronizerManager {
 
         if (groupWithDetails.getTechnicalUser() == null || groupWithDetails.getTechnicalUser().getId() == null) {
             log.debug("Group " + groupWithDetails.getPath() + " doesn't have technicalUser, create new one ");
-            createTechnicalUser(groupWithDetails);
+            syncTechnicalUser(groupWithDetails);
         }
         User user = usersClient.getUser(groupWithDetails.getTechnicalUser().getId());
         Membership membership = new Membership().memberName(user.getName())
@@ -240,19 +239,37 @@ public class UserSynchronizerManager {
         provider.addBinaryRepositoryMembership(binaryRepository.getId(), membership);
     }
 
-    private void createTechnicalUser(Group group) throws ApiException {
+    private void syncTechnicalUser(Group group) throws ApiException {
         String username=group.getName()+"_technicalUser";
-        byte[] array = new byte[7];
-        new Random().nextBytes(array);
-        String password = new String(array, Charset.forName("UTF-8"));
+        User user = usersClient.getUsers().stream().filter(u -> u.getName().equals(username)).findFirst().orElse(null);
 
-        User user = new User().name(username).password(password);
-        User userWithId = usersClient.addUser(user);
-        group.technicalUser(userWithId);
-        groupsClient.updateGroupAttributes(group.getId(), new Group().technicalUser(user));
+        // CREATE IN DB IF DOESN'T EXIST
+        if (user == null ) {
+            log.debug("User " + user.getName()+ " not found in db.. create new ones");
+            byte[] array = new byte[7];
+            new Random().nextBytes(array);
+            String password = new String(array, Charset.forName("UTF-8"));
+            user = new User().name(username).password(password);
+            User userWithId = usersClient.addUser(user);
+            group.technicalUser(userWithId);
+            groupsClient.updateGroupAttributes(group.getId(), new Group().technicalUser(user));
+        }
+        // CREATE IN USERMANAGER IF DOESN'T EXIST
+        if (userManager.getUser(user.getName()) == null) {
+            log.debug("User " + user.getName()+ " not found in usermanager.. create new ones");
+            if (user.getPassword() == null) {
+                throw new IllegalStateException("Technical should contains password");
+            }
+            userManager.createUser(user);
+            //usersClient.updateUserAttributes(user.getId(), userCreatedInUserManager);
+        }
 
-        User userCreatedInUserManager = userManager.createUser(user);
-        usersClient.updateUserAttributes(user.getId(), userCreatedInUserManager.status(Resource.StatusEnum.READY));
+
+        // JOIN TO GROUP IN USERMANAGER IF HE IS NOT A MEMBER
+        if (get_group_user_manager_members(userManager.getGroup(group.getPath())).stream().noneMatch(a -> a.getName().equals(username))) {
+            log.debug("User " + user.getName()+ " isn't member to group.");
+            userManager.assignUserToGroup(user.getName(), group.getPath());
+        }
     }
 
     @Deprecated
@@ -390,9 +407,7 @@ public class UserSynchronizerManager {
 
     private List<Assignation> get_group_user_manager_members(Group user_manager_group) {
         List<Assignation> members = user_manager_group.getMembers();
-        if (members == null)
-            return new ArrayList<Assignation>();
-        return members;
+        return (members == null) ? new ArrayList<>() : members;
     }
 
     private void synchronizeSourceManagerUsersOfGroup(Group user_manager_group, Group group_to_sync)
@@ -417,36 +432,15 @@ public class UserSynchronizerManager {
         log.debug("Groups from user manager: " + GsonUtils.toJson(groupsFromUserManager));
         log.debug("Groups from resource manager: " + GsonUtils.toJson(groupsFromResourceManager));
 
-        Map<String, Group> destinationGroups = groupsFromResourceManager.stream()
+        Map<String, Group> groupsFromResourceManagers = groupsFromResourceManager.stream()
                 .collect(Collectors.toMap(Group::getPath, g -> g));
-        log.debug("Groups from resource manager (map): " + destinationGroups.toString());
+        log.debug("Groups from resource manager (map): " + groupsFromResourceManagers.toString());
         Exception exceptionOccured = null;
-        for (Group user_manager_group : groupsFromUserManager) {
+        for (Group groupFromUserManager : groupsFromUserManager) {
             try {
-                String group_path = user_manager_group.getPath();
-                log.debug("SYNC GROUP loop; Group: " + group_path);
-                Group group_to_sync;
-
-                group_to_sync = destinationGroups.get(group_path);
-                log.debug("group found? " + (group_to_sync == null ? "NO" : group_path));
-                if (isGroupReady(group_to_sync)) {
-                    log.info("Group " + group_path + " is ready. Just sync users ");
-                    synchronizeSourceManagerUsersOfGroup(user_manager_group, group_to_sync);
-                    continue;
-                }
-                if (group_to_sync == null) {
-                    log.debug("Creating new group " + group_path);
-                    group_to_sync = groupsClient.addGroup(user_manager_group);
-                }
-
-                org.kathra.core.model.KeyPair keyPair = getKeyOrGenerateOne(group_to_sync);
-                tryToSynchronizeGroupPipeline(group_to_sync, keyPair);
-                tryToSynchronizeGroupBinary(group_to_sync);
-                tryToSynchronizeSourceManager(group_to_sync, keyPair);
-
-                synchronizeSourceManagerUsersOfGroup(user_manager_group, group_to_sync);
+                syncGroup(groupsFromResourceManagers, groupFromUserManager);
             } catch (Exception e) {
-                log.error("Cannot synchronize group " + user_manager_group.getPath() + ". Error: " + e.toString());
+                log.error("Cannot synchronize group " + groupFromUserManager.getPath() + ". Error: " + e.toString());
                 exceptionOccured = e;
             }
         }
@@ -457,6 +451,33 @@ public class UserSynchronizerManager {
             if (exceptionOccured instanceof RuntimeException)
                 throw (RuntimeException) exceptionOccured;
         }
+    }
+
+    private boolean syncGroup(Map<String, Group> groupsFromResourceManagers, Group groupFromUserManager) throws ApiException, NoSuchAlgorithmException {
+        String group_path = groupFromUserManager.getPath();
+        log.debug("SYNC GROUP loop; Group: " + group_path);
+        Group groupToSync;
+
+        groupToSync = groupsFromResourceManagers.get(group_path);
+        log.debug("group found? " + (groupToSync == null ? "NO" : group_path));
+        if (isGroupReady(groupToSync)) {
+            log.info("Group " + group_path + " is ready. Just sync users ");
+            synchronizeSourceManagerUsersOfGroup(groupFromUserManager, groupToSync);
+            return true;
+        }
+        if (groupToSync == null) {
+            log.debug("Creating new group " + group_path);
+            groupToSync = groupsClient.addGroup(groupFromUserManager);
+        }
+
+        syncTechnicalUser(groupToSync);
+        org.kathra.core.model.KeyPair keyPair = getKeyOrGenerateOne(groupToSync);
+        tryToSynchronizeGroupPipeline(groupToSync, keyPair);
+        tryToSynchronizeGroupBinary(groupToSync);
+        tryToSynchronizeSourceManager(groupToSync, keyPair);
+
+        synchronizeSourceManagerUsersOfGroup(groupFromUserManager, groupToSync);
+        return false;
     }
 
     private KeyPair generateKeyPair() throws NoSuchAlgorithmException {

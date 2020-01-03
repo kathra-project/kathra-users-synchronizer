@@ -56,7 +56,7 @@ public class Config extends ConfigManager {
         if (!BINARY_REPOSITORY_MANAGER_URL_NEXUS.startsWith("http"))
             BINARY_REPOSITORY_MANAGER_URL_NEXUS = "http://" + BINARY_REPOSITORY_MANAGER_URL_NEXUS;
 
-        BINARY_REPOSITORY_MANAGER_URL_HARBOR = getProperty("BINARY_REPOSITORY_MANAGER_URL_HARBOR", "binaryrepositorymanager-harbor");
+        BINARY_REPOSITORY_MANAGER_URL_HARBOR = getProperty("BINARY_REPOSITORY_MANAGER_URL", "binaryrepositorymanager-harbor");
         if (!BINARY_REPOSITORY_MANAGER_URL_HARBOR.startsWith("http"))
             BINARY_REPOSITORY_MANAGER_URL_HARBOR = "http://" + BINARY_REPOSITORY_MANAGER_URL_HARBOR;
 
