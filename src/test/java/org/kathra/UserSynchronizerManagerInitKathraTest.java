@@ -22,17 +22,12 @@
 package org.kathra;
 
 import org.junit.Test;
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.KeyPair;
 import org.kathra.pipelinemanager.client.PipelineManagerClient;
-import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
-import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
 import org.kathra.sourcemanager.model.Folder;
-import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
@@ -44,18 +39,7 @@ import static org.mockito.Mockito.*;
  * @author Jorge Sainz Raso <jorge.sainzraso@kathra.org>
  */
 
-public class UserSynchronizerManagerInitKathraTest {
-    @Mock
-    Config config;
-    KeycloackSession keycloackSession;
-    SourceManagerClient sourceManager;
-    PipelineManagerClient pipelineManager;
-    UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManagerNexus;
-    BinaryRepositoryManagerClient repositoryManagerHarbor;
-    BinaryRepositoriesClient binaryRepositoriesClient;
-    GroupsClient groupsClient;
-    KeyPairsClient keyPairsClient;
+public class UserSynchronizerManagerInitKathraTest  extends UserSynchronizerTests{
 
     @Test
     public void post_folders_to_pipeline_manager() throws ApiException {
@@ -67,8 +51,7 @@ public class UserSynchronizerManagerInitKathraTest {
         sourceManager = mock(SourceManagerClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
-        UserSynchronizerManager userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager,
-                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
+        init_user_sync_manager();
 
         userSynchronizerManager.initKathra();
         verify(pipelineManager, times(1)).createFolder(argThat((String path) -> path == "kathra-projects"));
@@ -84,8 +67,7 @@ public class UserSynchronizerManagerInitKathraTest {
         sourceManager = mock(SourceManagerClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
-        UserSynchronizerManager userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager,
-                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
+        init_user_sync_manager();
 
         userSynchronizerManager.initKathra();
         verify(sourceManager, times(1)).createFolder(argThat((Folder folder) -> folder.getPath() == "kathra-projects"));
@@ -101,8 +83,7 @@ public class UserSynchronizerManagerInitKathraTest {
         sourceManager = mock(SourceManagerClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
-        UserSynchronizerManager userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager,
-                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
+        init_user_sync_manager();
 
         when(sourceManager.createFolder(any(Folder.class))).thenThrow(ApiException.class);
         try {

@@ -58,24 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author Jorge Sainz Raso <jorge.sainzraso@kathra.org>
  */
 
-public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
-
-    Config config;
-    KeycloackSession keycloackSession;
-    SourceManagerClient sourceManager;
-    PipelineManagerClient pipelineManager;
-    UserManagerClient userManager;
-    BinaryRepositoryManagerClient repositoryManagerNexus;
-    BinaryRepositoryManagerClient repositoryManagerHarbor;
-    BinaryRepositoriesClient binaryRepositoriesClient;
-    GroupsClient groupsClient;
-    KeyPairsClient keyPairsClient;
-
-    UserSynchronizerManager userSynchronizerManager;
-
-    List<Group> groupsFromUserManager;
-    List<Group> groupsFromResourceManager;
-    List<KeyPair> keyPairs;
+public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest extends UserSynchronizerTests {
 
     public static final Logger logger = LoggerFactory.getLogger("UserSynchronizerManagerSyncGroupsTest");
 
@@ -89,36 +72,7 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
         repositoryManagerHarbor = mock(BinaryRepositoryManagerClient.class);
         groupsClient = mock(GroupsClient.class);
         keyPairsClient = mock(KeyPairsClient.class);
-        binaryRepositoriesClient = mock(BinaryRepositoriesClient.class);
 
-    }
-
-    private void init_user_sync_manager() throws ApiException {
-        userSynchronizerManager = new UserSynchronizerManager(sourceManager, pipelineManager, userManager,
-                repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
-
-    }
-
-    private void tearDown() throws ApiException {
-        if (groupsFromUserManager != null)
-            groupsFromUserManager.clear();
-        if (groupsFromResourceManager != null)
-            groupsFromResourceManager.clear();
-        if (keyPairs != null)
-            keyPairs.clear();
-
-    }
-
-    private void given_groups_from_user_manager(int... groups) throws ApiException {
-        groupsFromUserManager = new ArrayList<Group>();
-        for (int i : groups) {
-            Group g = new Group();
-            g.setId(Integer.toString(i));
-            g.setPath("/kathra-projects/path" + i);
-            g.setMembers(new ArrayList<Assignation>());
-            groupsFromUserManager.add(g);
-        }
-        when(userManager.getGroups()).thenReturn(groupsFromUserManager);
     }
 
     private void given_kathra_project_groups_from_user_manager(int... groups) throws ApiException {
@@ -131,18 +85,6 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
             groupsFromUserManager.add(g);
         }
         when(userManager.getGroups()).thenReturn(groupsFromUserManager);
-    }
-
-    private void given_pending_groups_from_resource_manager(int... groups) throws ApiException {
-        groupsFromResourceManager = new ArrayList<Group>();
-        for (int i : groups) {
-            Group g = new Group();
-            g.setPath("/kathra-projects/path" + i);
-            g.setId(Integer.toString(i));
-            g.status(StatusEnum.PENDING);
-            groupsFromResourceManager.add(g);
-        }
-        when(groupsClient.getGroups()).thenReturn(groupsFromResourceManager);
     }
 
     private void given_kathra_project_pending_groups_with_ready_pipeline_folder_status_from_resource_manager(
@@ -297,26 +239,7 @@ public class UserSynchronizerManagerSyncGroupsBinaryRepositoryManagerTest {
             return object;
         }
     }
-
-    private void given_groups_have_key_pairs(int... groups) throws ApiException {
-        keyPairs = new ArrayList<KeyPair>();
-        for (int i : groups) {
-            KeyPair newkey = new KeyPair();
-            newkey.id(Integer.toString(i));
-            newkey.group(groupsFromUserManager.get(i));
-            newkey.privateKey("privateKeyFor" + Integer.toString(i));
-            newkey.publicKey("publicKeyFor" + Integer.toString(i));
-            keyPairs.add(newkey);
-        }
-        when(keyPairsClient.getKeyPairs()).thenReturn(keyPairs);
-    }
-
-    private boolean isNotEmptyString(String string) {
-        boolean result = string != null && !string.isEmpty();
-        logger.info("RESULT " + result);
-        return result;
-    }
-
+    
     @Test
     @Ignore
     public void create_container_repository_if_group_doesnt_exist() throws ApiException, NoSuchAlgorithmException {

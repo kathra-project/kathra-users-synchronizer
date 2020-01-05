@@ -30,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.mockito.Mockito.*;
 
+import org.kathra.core.model.*;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
@@ -42,15 +43,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
-import org.kathra.core.model.Group;
-import org.kathra.core.model.KeyPair;
-import org.kathra.core.model.Membership;
 import org.kathra.core.model.Group.BinaryRepositoryStatusEnum;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Group.SourceRepositoryStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
 import org.kathra.utils.ApiException;
-import org.kathra.core.model.Resource;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -116,6 +113,7 @@ public class UserSynchronizerManagerSyncGroupSourceManagerTest extends UserSynch
         private void given_pending_groups_with_ready_pipeline_folder_and_ready_binary_repo_status_from_resource_manager(
                         int... groups) throws ApiException {
                 groupsFromResourceManager = new ArrayList<Group>();
+                usersFromResourceManager = new ArrayList<User>();
                 for (int i : groups) {
                         Group g = new Group();
                         g.setPath("/kathra-projects/path" + i);
@@ -123,10 +121,12 @@ public class UserSynchronizerManagerSyncGroupSourceManagerTest extends UserSynch
                         g.status(StatusEnum.PENDING);
                         g.setPipelineFolderStatus(PipelineFolderStatusEnum.READY);
                         g.setBinaryRepositoryStatus(BinaryRepositoryStatusEnum.READY);
-
+                        g.setTechnicalUser(new User().name(g.getName()+"_technicaluser").password("a password"));
+                        usersFromResourceManager.add(g.getTechnicalUser());
                         groupsFromResourceManager.add(g);
                 }
                 when(groupsClient.getGroups()).thenReturn(groupsFromResourceManager);
+                when(usersClient.getUsers()).thenReturn(usersFromResourceManager);
         }
 
         @Test
@@ -137,8 +137,6 @@ public class UserSynchronizerManagerSyncGroupSourceManagerTest extends UserSynch
                 given_pending_groups_with_ready_pipeline_folder_and_ready_binary_repo_status_and_ready_source_manager_from_resource_manager(
                                 0, 2);
                 given_groups_have_key_pairs(0, 2);
-                when(groupsClient.addGroup(any())).then(new AnswerSyncGroupPendingGroup());
-                when(keyPairsClient.addKeyPair(any())).then(new MockitoWhenChainingMethod<KeyPair>());
 
                 init_user_sync_manager();
 

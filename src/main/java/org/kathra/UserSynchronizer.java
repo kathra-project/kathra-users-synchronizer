@@ -27,7 +27,10 @@ import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
+import org.kathra.resourcemanager.client.UsersClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
+import org.kathra.synchronize.services.SyncBinaryRepository;
+import org.kathra.synchronize.services.SyncTechnicalUser;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,19 +54,25 @@ public class UserSynchronizer {
         UserManagerClient userManager = new UserManagerClient(config.getUserManagerUrl(), session);
         log.debug("User manager client initiated");
         BinaryRepositoryManagerClient repositoryManagerHarbor = new BinaryRepositoryManagerClient(
-                config.getBinaryRepositoryManagerUrlNexus(), session);
-        log.debug("Respository Manager client initiated");
-        BinaryRepositoryManagerClient repositoryManagerNexus = new BinaryRepositoryManagerClient(
                 config.getBinaryRepositoryManagerUrlHarbor(), session);
         log.debug("Respository Manager client initiated");
+        BinaryRepositoryManagerClient repositoryManagerNexus = new BinaryRepositoryManagerClient(
+                config.getBinaryRepositoryManagerUrlNexus(), session);
+        log.debug("Respository Manager client initiated");
         GroupsClient groupsClient = new GroupsClient(config.getResourceManagerUrl(), session);
+        log.debug("Groups client initiated");
+        UsersClient usersClient = new UsersClient(config.getResourceManagerUrl(), session);
         log.debug("Groups client initiated");
         KeyPairsClient keyPairsClient = new KeyPairsClient(config.getResourceManagerUrl(), session);
         log.debug("Keys pair client initiated");
         BinaryRepositoriesClient binaryRepositoriesClient = new BinaryRepositoriesClient(config.getResourceManagerUrl(), session);
         log.debug("Keys pair client initiated");
+
+        SyncTechnicalUser syncTechnicalUser = new SyncTechnicalUser(userManager, groupsClient, usersClient);
+        SyncBinaryRepository syncBinaryRepository = new SyncBinaryRepository(repositoryManagerNexus, repositoryManagerHarbor, groupsClient, usersClient, binaryRepositoriesClient);
+
         UserSynchronizerManager userSynchronizer = new UserSynchronizerManager(sourceManage, pipelineManager,
-                userManager, repositoryManagerNexus, repositoryManagerHarbor, groupsClient, keyPairsClient, binaryRepositoriesClient);
+                        userManager, groupsClient, keyPairsClient, syncBinaryRepository, syncTechnicalUser);
         log.debug("User synchronizer manager initiated");
         // userSynchronizer.initKathra();
         userSynchronizer.synchronizeGroups();

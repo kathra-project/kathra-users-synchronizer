@@ -52,66 +52,8 @@ import static org.mockito.Mockito.*;
 
 public class UserSynchronizerManagerSyncMembersSourceManagerTest extends UserSynchronizerTests {
 
-        private class AnswerPendingGroup extends MockitoWhenChainingMethod<Group> {
-                public Group processReturnObject(Group object) {
-                        object.setStatus(Resource.StatusEnum.PENDING);
-                        return object;
-                }
-        }
-
-        private class AnswerSyncGroupPendingGroup extends MockitoWhenChainingMethod<Group> {
-                public Group processReturnObject(Group object) {
-                        object.setStatus(Resource.StatusEnum.PENDING);
-                        object.setPipelineFolderStatus(Group.PipelineFolderStatusEnum.READY);
-                        object.setBinaryRepositoryStatus(Group.BinaryRepositoryStatusEnum.READY);
-                        return object;
-                }
-        }
-
-        private class AnswerReadyGroup extends MockitoWhenChainingMethod<Group> {
-                public Group processReturnObject(Group object) {
-                        object.setStatus(Resource.StatusEnum.READY);
-                        /* do not execute the rest of the process */
-                        object.setBinaryRepositoryStatus(Group.BinaryRepositoryStatusEnum.READY);
-                        return object;
-                }
-        }
-
         void setUp() {
                 super.setUp(this.getClass().getName());
-        }
-
-        private void given_pending_groups_with_ready_pipeline_folder_and_ready_binary_repo_status_and_ready_source_manager_from_resource_manager(
-                        int... groups) throws ApiException {
-                groupsFromResourceManager = new ArrayList<Group>();
-                for (int i : groups) {
-                        Group g = new Group();
-                        g.setPath("/kathra-projects/path" + i);
-                        g.setId(Integer.toString(i));
-                        g.status(StatusEnum.PENDING);
-                        g.setPipelineFolderStatus(PipelineFolderStatusEnum.READY);
-                        g.setBinaryRepositoryStatus(BinaryRepositoryStatusEnum.READY);
-                        g.setSourceRepositoryStatus(SourceRepositoryStatusEnum.READY);
-
-                        groupsFromResourceManager.add(g);
-                }
-                when(groupsClient.getGroups()).thenReturn(groupsFromResourceManager);
-        }
-
-        private void given_pending_groups_with_ready_pipeline_folder_and_ready_binary_repo_status_from_resource_manager(
-                        int... groups) throws ApiException {
-                groupsFromResourceManager = new ArrayList<Group>();
-                for (int i : groups) {
-                        Group g = new Group();
-                        g.setPath("/kathra-projects/path" + i);
-                        g.setId(Integer.toString(i));
-                        g.status(StatusEnum.PENDING);
-                        g.setPipelineFolderStatus(PipelineFolderStatusEnum.READY);
-                        g.setBinaryRepositoryStatus(BinaryRepositoryStatusEnum.READY);
-
-                        groupsFromResourceManager.add(g);
-                }
-                when(groupsClient.getGroups()).thenReturn(groupsFromResourceManager);
         }
 
         protected void given_ready_groups_from_resource_manager(int... groups) throws ApiException {
