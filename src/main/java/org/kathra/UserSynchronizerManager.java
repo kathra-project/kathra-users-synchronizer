@@ -59,6 +59,9 @@ public class UserSynchronizerManager {
     final private SyncBinaryRepository syncBinaryRepository;
     final private SyncTechnicalUser syncTechnicalUser;
 
+    final private String SOURCE_MANAGER_COMPONENT_PATH="components";
+    final private String PIPELINE_MANAGER_COMPONENT_PATH="components";
+
     public UserSynchronizerManager(SourceManagerClient sourceManager, PipelineManagerClient pipelineManager,
                                    UserManagerClient userManager,
                                    GroupsClient groupsClient,
@@ -128,14 +131,19 @@ public class UserSynchronizerManager {
 
     private void syncGroupPipelineManager(Group group, org.kathra.core.model.KeyPair keyPair)
             throws ApiException, NoSuchAlgorithmException {
-        pipelineManager.createFolder(group.getPath() + "/components");
+        syncGroupPipelineManagerPath(group, keyPair, PIPELINE_MANAGER_COMPONENT_PATH);
+        syncGroupPipelineManagerPath(group, keyPair, "packages");
+    }
+
+    private void syncGroupPipelineManagerPath(Group group, org.kathra.core.model.KeyPair keyPair, String path) throws ApiException {
+        pipelineManager.createFolder(group.getPath() + "/" + path);
         log.debug("Creating folder OK");
         pipelineManager
                 .addMembership(new Membership().memberName(group.getPath()).memberType(Membership.MemberTypeEnum.GROUP)
-                        .path(group.getPath() + "/components").role(Membership.RoleEnum.GUEST));
+                        .path(group.getPath() + "/"+path).role(Membership.RoleEnum.GUEST));
         log.debug("Add membership OK");
         Credential credential = new Credential();
-        credential.path(group.getPath() + "/components");
+        credential.path(group.getPath() + "/"+path);
         credential.credentialId(group.getId());
         credential.username(group.getPath() + " - " + group.getId());
         log.debug("Username " + group.getPath() + " - " + group.getId());
@@ -143,12 +151,19 @@ public class UserSynchronizerManager {
         credential.privateKey(keyPair.getPrivateKey());
         pipelineManager.addCredential(credential);
         log.debug("Add credential OK");
+
     }
 
     private Group syncSourceManagerFolder(Group group, org.kathra.core.model.KeyPair keyPair)
             throws ApiException {
+         syncSourceManagerFolder(group, keyPair, SOURCE_MANAGER_COMPONENT_PATH);
+         //syncSourceManagerFolder(group, keyPair, "packages");
+         return group;
+    }
+    private Group syncSourceManagerFolder(Group group, org.kathra.core.model.KeyPair keyPair, String path)
+            throws ApiException {
         String group_path = group.getPath();
-        sourceManager.createFolder(new Folder().path(group_path + "/components"));
+        sourceManager.createFolder(new Folder().path(group_path + "/"+ path));
         SourceRepository deployKeyRepository = new SourceRepository().path(group.getPath() + "/kathra-deploy-key");
         sourceManager.createSourceRepository(deployKeyRepository, null);
         log.debug("going to add membership 'kathra-sourcemanager' to source manager on deploy key repository path "
@@ -158,6 +173,7 @@ public class UserSynchronizerManager {
         sourceManager.createDeployKey(group.getId(), keyPair.getPublicKey(), deployKeyRepository.getPath());
 
         return group;
+
     }
 
     private void tryToSynchronizeGroupPipeline(Group group_to_sync, org.kathra.core.model.KeyPair keyPair) {
@@ -203,8 +219,7 @@ public class UserSynchronizerManager {
         }
     }
 
-    private List<Membership> get_source_manager_memberships_from_group_path(String group_path) throws ApiException {
-        String path = group_path + "/components";
+    private List<Membership> get_source_manager_memberships_from_group_path(String path) throws ApiException {
         String user_type = String.valueOf(Membership.MemberTypeEnum.USER);
         List<Membership> members = sourceManager.getMemberships(path, user_type);
         if (members == null)
@@ -212,7 +227,7 @@ public class UserSynchronizerManager {
         return members;
     }
 
-    private void synchronizeUsers(Group group_to_sync, List<Assignation> users_source, List<Membership> users_dest)
+    private void synchronizeUsers(Group group_to_sync, List<Assignation> users_source, List<Membership> users_dest, String path)
             throws ApiException {
 
         List<Membership> users_to_add = new ArrayList<Membership>();
@@ -224,7 +239,7 @@ public class UserSynchronizerManager {
                 Membership newMember = new Membership();
                 newMember.setMemberName(member.getName());
                 newMember.setRole(Membership.RoleEnum.MANAGER);
-                newMember.setPath(group_to_sync.getPath() + "/components");
+                newMember.setPath(group_to_sync.getPath() + "/" + path);
                 users_to_add.add(newMember);
             }
             source_manager_members.remove(member.getName());
@@ -238,7 +253,7 @@ public class UserSynchronizerManager {
         if (!source_manager_members.isEmpty()) {
             List<Membership> users_to_delete = new ArrayList<Membership>(source_manager_members.values());
             for (Membership userToDelete : users_to_delete)
-                userToDelete.setPath(group_to_sync.getPath() + "/components");
+                userToDelete.setPath(group_to_sync.getPath() + "/" + path);
             log.debug("Removing users: " + GsonUtils.toJson(users_to_delete));
             sourceManager.deleteMemberships(users_to_delete);
         }
@@ -253,13 +268,12 @@ public class UserSynchronizerManager {
         return (members == null) ? new ArrayList<>() : members;
     }
 
-    private void synchronizeSourceManagerUsersOfGroup(Group user_manager_group, Group group_to_sync)
+    private void synchronizeSourceManagerUsersOfGroup(Group user_manager_group, Group group_to_sync, String path)
             throws ApiException {
         try {
             List<Assignation> user_manager_group_members = get_group_user_manager_members(user_manager_group);
-            List<Membership> source_manager_group_members = get_source_manager_memberships_from_group_path(
-                    group_to_sync.getPath());
-            synchronizeUsers(group_to_sync, user_manager_group_members, source_manager_group_members);
+            List<Membership> source_manager_group_members = get_source_manager_memberships_from_group_path(group_to_sync.getPath()+"/"+path);
+            synchronizeUsers(group_to_sync, user_manager_group_members, source_manager_group_members, path);
         } catch (Exception e) {
             log.error("Cannot synchronize users of group " + group_to_sync.getPath() + ". Error: " + e.toString());
             e.printStackTrace();
@@ -305,7 +319,7 @@ public class UserSynchronizerManager {
         log.debug("group found? " + (groupToSync == null ? "NO" : group_path));
         if (isGroupReady(groupToSync)) {
             log.info("Group " + group_path + " is ready. Just sync users ");
-            synchronizeSourceManagerUsersOfGroup(groupFromUserManager, groupToSync);
+            synchronizeSourceManagerUsersOfGroup(groupFromUserManager, groupToSync, SOURCE_MANAGER_COMPONENT_PATH);
             return true;
         }
         if (groupToSync == null) {
@@ -319,7 +333,7 @@ public class UserSynchronizerManager {
         tryToSynchronizeGroupBinary(groupToSync);
         tryToSynchronizeSourceManager(groupToSync, keyPair);
 
-        synchronizeSourceManagerUsersOfGroup(groupFromUserManager, groupToSync);
+        synchronizeSourceManagerUsersOfGroup(groupFromUserManager, groupToSync, SOURCE_MANAGER_COMPONENT_PATH);
         return false;
     }
 

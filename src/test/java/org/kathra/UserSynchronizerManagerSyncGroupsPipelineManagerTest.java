@@ -206,6 +206,10 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
         verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path1/components")));
         verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path2/components")));
         verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path3/components")));
+        verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path0/packages")));
+        verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path1/packages")));
+        verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path2/packages")));
+        verify(pipelineManager, times(1)).createFolder(argThat(path -> path.equals("/kathra-projects/path3/packages")));
 
         tearDown();
     }
@@ -246,6 +250,10 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
         verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path1/components"));
         verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path2/components"));
         verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path3/components"));
+        verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path0/packages"));
+        verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path1/packages"));
+        verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path2/packages"));
+        verify(pipelineManager, times(1)).createFolder(eq("/kathra-projects/path3/packages"));
 
         tearDown();
     }
@@ -278,6 +286,24 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
                 && membership.getPath().equals("/kathra-projects/path3/components")
                 && membership.getRole().equals(Membership.RoleEnum.GUEST)));
 
+
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path0/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path1")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path1/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path2/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path3/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+
         tearDown();
     }
 
@@ -307,6 +333,23 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path3/components")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path0/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path1")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path1/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path2/packages")
+                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+        verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
+                && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
+                && membership.getPath().equals("/kathra-projects/path3/packages")
                 && membership.getRole().equals(Membership.RoleEnum.GUEST)));
 
         tearDown();
@@ -341,6 +384,22 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
                         && credential.getCredentialId().equals("3") && credential.getUsername().equals("/kathra-projects/path3 - 3")
                         && credential.getDescription().equals("SSH Pull Key")));
 
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path0/packages")
+                        && credential.getCredentialId().equals("0") && credential.getUsername().equals("/kathra-projects/path0 - 0")
+                        && credential.getDescription().equals("SSH Pull Key")));
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path1/packages")
+                        && credential.getCredentialId().equals("1") && credential.getUsername().equals("/kathra-projects/path1 - 1")
+                        && credential.getDescription().equals("SSH Pull Key")));
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path2/packages")
+                        && credential.getCredentialId().equals("2") && credential.getUsername().equals("/kathra-projects/path2 - 2")
+                        && credential.getDescription().equals("SSH Pull Key")));
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path3/packages")
+                        && credential.getCredentialId().equals("3") && credential.getUsername().equals("/kathra-projects/path3 - 3")
+                        && credential.getDescription().equals("SSH Pull Key")));
         tearDown();
     }
 
@@ -372,6 +431,22 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
                         && credential.getCredentialId().equals("3") && credential.getUsername().equals("/kathra-projects/path3 - 3")
                         && credential.getDescription().equals("SSH Pull Key")));
 
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path0/packages")
+                        && credential.getCredentialId().equals("0") && credential.getUsername().equals("/kathra-projects/path0 - 0")
+                        && credential.getDescription().equals("SSH Pull Key")));
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path1/packages")
+                        && credential.getCredentialId().equals("1") && credential.getUsername().equals("/kathra-projects/path1 - 1")
+                        && credential.getDescription().equals("SSH Pull Key")));
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path2/packages")
+                        && credential.getCredentialId().equals("2") && credential.getUsername().equals("/kathra-projects/path2 - 2")
+                        && credential.getDescription().equals("SSH Pull Key")));
+        verify(pipelineManager, times(1))
+                .addCredential(argThat(credential -> credential.getPath().equals("/kathra-projects/path3/packages")
+                        && credential.getCredentialId().equals("3") && credential.getUsername().equals("/kathra-projects/path3 - 3")
+                        && credential.getDescription().equals("SSH Pull Key")));
         tearDown();
     }
 
