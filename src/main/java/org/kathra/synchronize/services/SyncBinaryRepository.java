@@ -153,7 +153,7 @@ public class SyncBinaryRepository {
                 break;
             case JAVA:
             case PYTHON:
-                throw new NotImplementedException("BinaryRepository"+binaryRepository.getType()+" not implemented");
+                throw new IllegalArgumentException("BinaryRepository"+binaryRepository.getType()+" not implemented");
             default:
                 throw new IllegalArgumentException();
         }

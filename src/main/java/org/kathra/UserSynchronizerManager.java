@@ -32,6 +32,7 @@ import org.kathra.synchronize.services.SyncBinaryRepository;
 import org.kathra.synchronize.services.SyncTechnicalUser;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
+import org.kathra.utils.KathraException;
 import org.kathra.utils.security.AuthentificationUtils;
 import org.kathra.utils.serialization.GsonUtils;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class UserSynchronizerManager {
     final private PipelineManagerClient pipelineManager;
     final private UserManagerClient userManager;
     final private GroupsClient groupsClient;
-    final private KeyPairsClient keyPairsClient;;
+    final private KeyPairsClient keyPairsClient;
     final private List<org.kathra.core.model.KeyPair> keyPairsExisting;
     final private SyncBinaryRepository syncBinaryRepository;
     final private SyncTechnicalUser syncTechnicalUser;
@@ -108,25 +109,19 @@ public class UserSynchronizerManager {
     }
 
     private boolean groupPipelineShouldBeSync(Group group) {
-        if (group.getPipelineFolderStatus() != null
-                && group.getPipelineFolderStatus().equals(Group.PipelineFolderStatusEnum.READY))
-            return false;
-        return true;
+        return group.getPipelineFolderStatus() == null
+                || !group.getPipelineFolderStatus().equals(Group.PipelineFolderStatusEnum.READY);
     }
 
     private boolean groupBinaryRepoShouldBeSync(Group group_to_sync) {
-        if (group_to_sync.getBinaryRepositoryStatus() != null
-                && group_to_sync.getBinaryRepositoryStatus().equals(Group.BinaryRepositoryStatusEnum.READY))
-            return false;
-        return true;
+        return group_to_sync.getBinaryRepositoryStatus() == null
+                || !group_to_sync.getBinaryRepositoryStatus().equals(Group.BinaryRepositoryStatusEnum.READY);
 
     }
 
     private boolean groupSourceManagerShouldBeSync(Group group_to_sync) {
-        if (group_to_sync.getSourceRepositoryStatus() != null
-                && group_to_sync.getSourceRepositoryStatus().equals(Group.SourceRepositoryStatusEnum.READY))
-            return false;
-        return true;
+        return group_to_sync.getSourceRepositoryStatus() == null
+                || !group_to_sync.getSourceRepositoryStatus().equals(Group.SourceRepositoryStatusEnum.READY);
     }
 
     private void syncGroupPipelineManager(Group group, org.kathra.core.model.KeyPair keyPair)
@@ -165,7 +160,14 @@ public class UserSynchronizerManager {
         String group_path = group.getPath();
         sourceManager.createFolder(new Folder().path(group_path + "/"+ path));
         SourceRepository deployKeyRepository = new SourceRepository().path(group.getPath() + "/kathra-deploy-key");
-        sourceManager.createSourceRepository(deployKeyRepository, null);
+        try {
+            sourceManager.createSourceRepository(deployKeyRepository, null);
+        } catch(ApiException e) {
+            // IF REPOSITORY ALREADY EXISTS, NO THROW EXCEPTION
+            if (e.getCode() != KathraException.ErrorCode.CONFLICT.getCode()) {
+                throw e;
+            }
+        }
         log.debug("going to add membership 'kathra-sourcemanager' to source manager on deploy key repository path "
                 + deployKeyRepository.getPath());
         sourceManager.addMemberships(Collections.singletonList(new Membership().memberName("kathra-sourcemanager")
