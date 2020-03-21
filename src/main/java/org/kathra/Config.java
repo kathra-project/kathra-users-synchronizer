@@ -29,31 +29,36 @@ public class Config extends ConfigManager {
     private String PIPELINE_MANAGER_URL;
     private String USER_MANAGER_URL;
     private String RESOURCE_MANAGER_URL;
-    private String BINARY_REPOSITORY_MANAGER_URL;
+    private String BINARY_REPOSITORY_MANAGER_URL_NEXUS;
+    private String BINARY_REPOSITORY_MANAGER_URL_HARBOR;
     private String USERNAME;
     private String PASSWORD;
 
 
     public Config() {
-        SOURCE_MANAGER_URL = getProperty("SOURCE_MANAGER_URL","sourcemanager");
+        SOURCE_MANAGER_URL = getProperty("SOURCE_MANAGER_URL");
         if (!SOURCE_MANAGER_URL.startsWith("http"))
             SOURCE_MANAGER_URL = "http://" + SOURCE_MANAGER_URL;
 
-        PIPELINE_MANAGER_URL = getProperty("PIPELINE_MANAGER_URL", "pipelinemanager");
+        PIPELINE_MANAGER_URL = getProperty("PIPELINE_MANAGER_URL");
         if (!PIPELINE_MANAGER_URL.startsWith("http"))
             PIPELINE_MANAGER_URL = "http://" + PIPELINE_MANAGER_URL;
 
-        USER_MANAGER_URL = getProperty("USER_MANAGER_URL", "usermanager");
+        USER_MANAGER_URL = getProperty("USER_MANAGER_URL");
         if (!USER_MANAGER_URL.startsWith("http"))
             USER_MANAGER_URL = "http://" + USER_MANAGER_URL;
 
-        RESOURCE_MANAGER_URL = getProperty("RESOURCE_MANAGER_URL", "resourcemanager");
+        RESOURCE_MANAGER_URL = getProperty("RESOURCE_MANAGER_URL");
         if (!RESOURCE_MANAGER_URL.startsWith("http"))
             RESOURCE_MANAGER_URL = "http://" + RESOURCE_MANAGER_URL;
 
-        BINARY_REPOSITORY_MANAGER_URL = getProperty("BINARY_REPOSITORY_MANAGER_URL", "binaryrepositorymanager");
-        if (!BINARY_REPOSITORY_MANAGER_URL.startsWith("http"))
-            BINARY_REPOSITORY_MANAGER_URL = "http://" + BINARY_REPOSITORY_MANAGER_URL;
+        BINARY_REPOSITORY_MANAGER_URL_NEXUS = getProperty("BINARY_REPOSITORY_MANAGER_URL_NEXUS");
+        if (!BINARY_REPOSITORY_MANAGER_URL_NEXUS.startsWith("http"))
+            BINARY_REPOSITORY_MANAGER_URL_NEXUS = "http://" + BINARY_REPOSITORY_MANAGER_URL_NEXUS;
+
+        BINARY_REPOSITORY_MANAGER_URL_HARBOR = getProperty("BINARY_REPOSITORY_MANAGER_URL_HARBOR");
+        if (!BINARY_REPOSITORY_MANAGER_URL_HARBOR.startsWith("http"))
+            BINARY_REPOSITORY_MANAGER_URL_HARBOR = "http://" + BINARY_REPOSITORY_MANAGER_URL_HARBOR;
 
         USERNAME = getProperty("USERNAME");
         PASSWORD = getProperty("PASSWORD");
@@ -75,8 +80,11 @@ public class Config extends ConfigManager {
         return RESOURCE_MANAGER_URL;
     }
 
-    public String getBinaryRepositoryManagerUrl() {
-        return BINARY_REPOSITORY_MANAGER_URL;
+    public String getBinaryRepositoryManagerUrlHarbor() {
+        return BINARY_REPOSITORY_MANAGER_URL_HARBOR;
+    }
+    public String getBinaryRepositoryManagerUrlNexus() {
+        return BINARY_REPOSITORY_MANAGER_URL_NEXUS;
     }
 
     public String getUsername() {

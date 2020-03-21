@@ -21,50 +21,21 @@
 
 package org.kathra;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
-
-import static org.mockito.Mockito.*;
-
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.KeyPair;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
-import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
-import org.kathra.sourcemanager.client.SourceManagerClient;
-import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
-import org.kathra.sourcemanager.model.Folder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
+
 /**
  * @author Jorge Sainz Raso <jorge.sainzraso@kathra.org>
  */
-public class UserSynchronizerManagerInitTest {
+public class UserSynchronizerManagerInitTest extends UserSynchronizerTests {
 
-    @Mock
-    Config config;
-    @Mock
-    KeycloackSession keycloackSession;
-    @Mock
-    SourceManagerClient sourceManager;
-    @Mock
-    PipelineManagerClient pipelineManager;
-    @Mock
-    UserManagerClient userManager;
-    @Mock
-    BinaryRepositoryManagerClient repositoryManager;
-    @Mock
-    GroupsClient groupsClient;
-    @Mock
-    KeyPairsClient keyPairsClient;
 
     @Test
     public void init_manager_get_keys_pairs() throws ApiException {
@@ -72,8 +43,7 @@ public class UserSynchronizerManagerInitTest {
         keyPairsClient = mock(KeyPairsClient.class);
         when(keyPairsClient.getKeyPairs()).thenReturn(mockedKeyPairs);
 
-        new UserSynchronizerManager(sourceManager, pipelineManager, userManager, repositoryManager, groupsClient,
-                keyPairsClient);
+        init_user_sync_manager();
 
         verify(keyPairsClient, times(1)).getKeyPairs();
 
