@@ -1,5 +1,5 @@
-/* 
- * Copyright 2019 The Kathra Authors.
+/*
+ * Copyright (c) 2020. The Kathra Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,17 @@
  * limitations under the License.
  *
  * Contributors:
- *
- *    IRT SystemX (https://www.kathra.org/)    
+ *    IRT SystemX (https://www.kathra.org/)
  *
  */
 
 package org.kathra;
 
 import org.junit.Test;
-import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.*;
 import org.kathra.core.model.Group.PipelineFolderStatusEnum;
 import org.kathra.core.model.Resource.StatusEnum;
-import org.kathra.pipelinemanager.client.PipelineManagerClient;
 import org.kathra.pipelinemanager.model.Credential;
-import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
-import org.kathra.resourcemanager.client.GroupsClient;
-import org.kathra.resourcemanager.client.KeyPairsClient;
-import org.kathra.sourcemanager.client.SourceManagerClient;
-import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
 import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
@@ -42,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -272,37 +263,37 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path0/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path1")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path1/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path2/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path3/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
 
 
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path0/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path1")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path1/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path2/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path3/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
 
         tearDown();
     }
@@ -321,36 +312,36 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path0/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path1")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path1/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path2/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path3/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
 
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path0/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path1")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path1/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path2/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path3")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path3/packages")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
 
         tearDown();
     }
@@ -514,11 +505,11 @@ public class UserSynchronizerManagerSyncGroupsPipelineManagerTest extends UserSy
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path0")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path0/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
         verify(pipelineManager, times(1)).addMembership(argThat(membership -> membership.getMemberName().equals("/kathra-projects/path2")
                 && membership.getMemberType().equals(Membership.MemberTypeEnum.GROUP)
                 && membership.getPath().equals("/kathra-projects/path2/components")
-                && membership.getRole().equals(Membership.RoleEnum.GUEST)));
+                && membership.getRole().equals(Membership.RoleEnum.CONTRIBUTOR)));
 
 
         tearDown();

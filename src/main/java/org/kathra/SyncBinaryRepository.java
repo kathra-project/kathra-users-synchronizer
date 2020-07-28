@@ -1,6 +1,25 @@
-package org.kathra.synchronize.services;
+/*
+ * Copyright (c) 2020. The Kathra Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Contributors:
+ *    IRT SystemX (https://www.kathra.org/)
+ *
+ */
 
-import org.apache.commons.lang3.NotImplementedException;
+package org.kathra;
+
 import org.apache.commons.lang3.StringUtils;
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.*;
@@ -82,6 +101,7 @@ public class SyncBinaryRepository {
         if (StringUtils.isEmpty(binaryRepository.getProviderId())) {
             binaryRepository = createBinaryRepositoryIntoProvider(binaryRepository);
             defineTechnicalUserAsMembership(binaryRepository);
+            defineGroupAsMembership(binaryRepository);
         } else {
             BinaryRepositoryManagerClient provider = getBinaryRepositoryManagerProvider(binaryRepository);
             BinaryRepository result = null;
@@ -95,6 +115,7 @@ public class SyncBinaryRepository {
             }
             if (result != null) {
                 defineTechnicalUserAsMembership(binaryRepository);
+                defineGroupAsMembership(binaryRepository);
             }
         }
         return binaryRepository;
@@ -145,19 +166,27 @@ public class SyncBinaryRepository {
     }
 
     private BinaryRepositoryManagerClient getBinaryRepositoryManagerProvider(BinaryRepository binaryRepository) {
-        BinaryRepositoryManagerClient provider;
         switch(binaryRepository.getType()) {
             case HELM:
             case DOCKER_IMAGE:
-                provider = this.repositoryManagerHarbor;
-                break;
+                return this.repositoryManagerHarbor;
             case JAVA:
             case PYTHON:
-                throw new IllegalArgumentException("BinaryRepository"+binaryRepository.getType()+" not implemented");
+                return this.repositoryManagerNexus;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Not implemented");
         }
-        return provider;
+    }
+
+    private void defineGroupAsMembership(BinaryRepository binaryRepository) throws ApiException {
+
+        BinaryRepositoryManagerClient provider = getBinaryRepositoryManagerProvider(binaryRepository);
+        Group groupWithDetails = groupsClient.getGroup(binaryRepository.getGroup().getId());
+        Membership membership = new Membership().memberName(groupWithDetails.getPath())
+                .memberType(Membership.MemberTypeEnum.GROUP)
+                .role(Membership.RoleEnum.MANAGER);
+
+        provider.addBinaryRepositoryMembership(binaryRepository.getProviderId(), membership);
     }
 
     private void defineTechnicalUserAsMembership(BinaryRepository binaryRepository) throws ApiException {
