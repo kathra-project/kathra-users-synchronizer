@@ -1,5 +1,5 @@
-/* 
- * Copyright 2019 The Kathra Authors.
+/*
+ * Copyright (c) 2020. The Kathra Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  * Contributors:
- *
- *    IRT SystemX (https://www.kathra.org/)    
+ *    IRT SystemX (https://www.kathra.org/)
  *
  */
 
@@ -26,10 +25,8 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.Disabled;
 import org.kathra.binaryrepositorymanager.client.BinaryRepositoryManagerClient;
 import org.kathra.core.model.*;
-import org.kathra.resourcemanager.client.BinaryRepositoriesClient;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
@@ -47,7 +44,6 @@ import org.kathra.utils.ApiException;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

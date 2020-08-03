@@ -1,10 +1,27 @@
-package org.kathra.synchronize.services;
+/*
+ * Copyright (c) 2020. The Kathra Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Contributors:
+ *    IRT SystemX (https://www.kathra.org/)
+ *
+ */
+
+package org.kathra;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.kathra.core.model.Assignation;
-import org.kathra.core.model.Group;
-import org.kathra.core.model.Resource;
-import org.kathra.core.model.User;
+import org.kathra.core.model.*;
 import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.UsersClient;
 import org.kathra.usermanager.client.UserManagerClient;
@@ -32,6 +49,7 @@ public class SyncTechnicalUser {
     final private GroupsClient groupsClient;
     final private UsersClient usersClient;
 
+
     public SyncTechnicalUser(UserManagerClient userManager,
                              GroupsClient groupsClient, UsersClient usersClient) {
 
@@ -47,7 +65,7 @@ public class SyncTechnicalUser {
         // CREATE IN DB IF DOESN'T EXIST
         if (user == null ) {
             log.debug("User " + username + " not found in db.. create new ones");
-            user = new User().name(username).password(generateSecureRandomPassword());
+            user = new User().name(username).email(username+"@"+group.getName()+".kathra.org").password(generateSecureRandomPassword());
             user = usersClient.addUser(user);
             group.technicalUser(user);
             groupsClient.updateGroupAttributes(group.getId(), new Group().technicalUser(user));

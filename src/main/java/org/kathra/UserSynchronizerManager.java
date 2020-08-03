@@ -1,5 +1,5 @@
-/* 
- * Copyright 2019 The Kathra Authors.
+/*
+ * Copyright (c) 2020. The Kathra Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  * Contributors:
- *
- *    IRT SystemX (https://www.kathra.org/)    
+ *    IRT SystemX (https://www.kathra.org/)
  *
  */
 
@@ -28,8 +27,6 @@ import org.kathra.resourcemanager.client.GroupsClient;
 import org.kathra.resourcemanager.client.KeyPairsClient;
 import org.kathra.sourcemanager.client.SourceManagerClient;
 import org.kathra.sourcemanager.model.Folder;
-import org.kathra.synchronize.services.SyncBinaryRepository;
-import org.kathra.synchronize.services.SyncTechnicalUser;
 import org.kathra.usermanager.client.UserManagerClient;
 import org.kathra.utils.ApiException;
 import org.kathra.utils.KathraException;
@@ -63,6 +60,12 @@ public class UserSynchronizerManager {
     final private String SOURCE_MANAGER_COMPONENT_PATH="components";
     final private String PIPELINE_MANAGER_COMPONENT_PATH="components";
 
+    final public String BASE_PATH = "kathra-projects";
+    final public String PREFIX_GROUP_NAME = "kathra-projects/";
+
+
+    final private Membership.RoleEnum DEFAULT_ROLE = Membership.RoleEnum.CONTRIBUTOR;
+
     public UserSynchronizerManager(SourceManagerClient sourceManager, PipelineManagerClient pipelineManager,
                                    UserManagerClient userManager,
                                    GroupsClient groupsClient,
@@ -83,7 +86,7 @@ public class UserSynchronizerManager {
 
     public void initKathra() throws ApiException {
         log.info("Init kathra");
-        Folder kathraProjectsFolder = new Folder().path("kathra-projects");
+        Folder kathraProjectsFolder = new Folder().path(BASE_PATH);
         sourceManager.createFolder(kathraProjectsFolder);
         pipelineManager.createFolder(kathraProjectsFolder.getPath());
         log.info("Init kathra - OK");
@@ -135,7 +138,7 @@ public class UserSynchronizerManager {
         log.debug("Creating folder OK");
         pipelineManager
                 .addMembership(new Membership().memberName(group.getPath()).memberType(Membership.MemberTypeEnum.GROUP)
-                        .path(group.getPath() + "/"+path).role(Membership.RoleEnum.GUEST));
+                        .path(group.getPath() + "/"+path).role(DEFAULT_ROLE));
         log.debug("Add membership OK");
         Credential credential = new Credential();
         credential.path(group.getPath() + "/"+path);
